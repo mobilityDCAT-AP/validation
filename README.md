@@ -140,7 +140,7 @@ PASS → baseline-dcat-ap/positive/B-P-01-minimal.ttl
 **Failing case:**
 FAIL → baseline-dcat-ap/negative/B-N-01-missing-title.ttl
 
-### Regression Testing
+## Regression Testing
 
 The regression/ folder protects previously validated behaviour.
 
