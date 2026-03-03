@@ -1,40 +1,34 @@
 # mobilityDCAT-AP SHACL Validation
 
-Validates RDF data against DCAT-AP 3.0 and mobilityDCAT-AP 1.1.0 shapes.
+Validates RDF data against DCAT-AP 3.0 and mobilityDCAT-AP 1.1.0.
 
-## Quick Start
+## Setup
 
 ```bash
-# Clone
 git clone https://github.com/mobilityDCAT-AP/validation.git
 cd validation
-
-# Install dependencies (using uv)
 uv sync
+```
 
-# Run validation
-uv python run validate_per_data_file.py
+## Run Validation
+
+```bash
+uv run scripts/validate.py
 ```
 
 ## Structure
 
 ```
 validation/
-├── data/           # Test cases (.ttl files)
-│   ├── positive/   # Should pass validation
-│   └── negative/   # Should fail validation
-├── shacl/          # SHACL shape files
-└── validate_per_data_file.py
+├── scripts/validate.py    # Validation script
+├── data/
+│   ├── positive/          # Tests that should pass
+│   └── negative/          # Tests that should fail
+└── shacl/                 # SHACL shape files
 ```
 
-## Adding Tests
+## Add Tests
 
 1. Put SHACL shapes in `shacl/`
-2. Put test files in `data/positive/` or `data/negative/`
-3. Run `uv run validate_per_data_file.py`
-
-## Requirements
-
-- Python 3.11+
-- pyshacl
-- rdflib
+2. Put test `.ttl` files in `data/positive/` or `data/negative/`
+3. Run `uv run scripts/validate.py`
