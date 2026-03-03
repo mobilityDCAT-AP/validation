@@ -15,6 +15,7 @@ env/
 .python-version
 uv.lock
 
+
 # IDEs
 .vscode/
 .idea/
