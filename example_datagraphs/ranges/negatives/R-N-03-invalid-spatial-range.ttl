@@ -1,0 +1,13 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix ex:   <https://example.org/data/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ex:catalog1 a dcat:Catalog ;
+    dct:title "Mobility Data Catalog"@en ;
+    dct:publisher ex:agent1 ;
+    # This should fail: spatial must be a dct:Location or IRI, not a literal
+    dct:spatial "Germany" .
+
+ex:agent1 a foaf:Agent ;
+    foaf:name "Transport Authority"@en .

@@ -1,0 +1,11 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ex:   <https://example.org/data/> .
+
+ex:catalog1 a dcat:Catalog ;
+    dct:title "Mobility Data Catalog"@en ;
+    dct:publisher ex:agent1 .
+
+ex:agent1 a foaf:Agent ;
+    foaf:name "Transport Authority"@en .
