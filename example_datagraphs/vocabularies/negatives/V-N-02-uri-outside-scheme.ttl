@@ -1,0 +1,15 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix ex:   <https://example.org/data/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+ex:dataset1 a dcat:Dataset ;
+    dct:title "Train Schedule"@en ;
+    dcat:distribution ex:distribution1 .
+
+ex:distribution1 a dcat:Distribution ;
+    dcat:accessURL <https://example.org/data/train_schedule.zip> ;
+    # Invalid: URI outside the official file-type scheme
+    dct:format <https://example.com/formats/ZIP> ;
+    dct:rights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
+    dct:issued "2025-01-01"^^xsd:date .

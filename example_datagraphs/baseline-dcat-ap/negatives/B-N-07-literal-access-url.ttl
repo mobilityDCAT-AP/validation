@@ -1,0 +1,5 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+<https://example.org/distribution/bad>
+    a dcat:Distribution ;
+    dcat:accessURL "https://example.org/file.csv" .

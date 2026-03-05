@@ -1,0 +1,6 @@
+services:
+  validator:
+    build: .
+    volumes:
+      - ./example_datagraphs:/data:ro
+      - ./shacl:/validation/shacl:ro

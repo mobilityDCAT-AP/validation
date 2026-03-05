@@ -1,0 +1,6 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+
+<https://example.org/dataset/standalone>
+    a dcat:Dataset ;
+    dct:title "Standalone dataset"@en .

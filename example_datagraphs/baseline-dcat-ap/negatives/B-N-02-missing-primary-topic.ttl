@@ -1,0 +1,7 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+
+<https://example.org/record/broken>
+    a dcat:CatalogRecord ;
+    dct:title "A title" ;
+    dct:created "2024-01-01"^^<http://www.w3.org/2001/XMLSchema#date> .
