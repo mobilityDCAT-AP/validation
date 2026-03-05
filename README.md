@@ -1,6 +1,13 @@
 # mobilityDCAT-AP SHACL Validation
 
-Validates RDF data against DCAT-AP 3.0.1 and mobilityDCAT-AP 1.1.0 specifications.
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Docker](https://img.shields.io/badge/Docker-enabled-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
+[![SHACL](https://img.shields.io/badge/SHACL-W3C-orange.svg)](https://www.w3.org/TR/shacl/)
+[![RDF](https://img.shields.io/badge/RDF-Turtle%20|%20JSON--LD%20|%20XML-green.svg)](https://www.w3.org/RDF/)
+[![mobilityDCAT-AP](https://img.shields.io/badge/mobilityDCAT--AP-1.1.0-purple.svg)](https://w3id.org/mobilitydcat-ap/releases/1.1.0/)
+
+
+Validates RDF data against mobilityDCAT-AP 1.1.0 and DCAT-AP 3.0.1 specifications.
 
 ## Quick Setup
 ```bash
@@ -18,75 +25,40 @@ uv run scripts/validate.py --data example_datagraphs/baseline-dcat-ap/negatives/
 uv run scripts/validate.py --data example_datagraphs/ --shacl shacl/
 ```
 
-## Docker Usage
-
-### Build
+## Docker
 ```bash
 docker build -t mobilitydcat-validator .
+docker run -v %cd%/example_datagraphs:/data mobilitydcat-validator --data /data/baseline-dcat-ap/ --shacl /validation/shacl/
 ```
 
-### Run
-```bash
-# Validate file
-docker run -v $(pwd)/example_datagraphs:/data mobilitydcat-validator \
-  --data /data/baseline-dcat-ap/negatives/B-N-01-missing-catalog-title.ttl \
-  --shacl /validation/shacl/
-
-# Run all tests
-docker run -v $(pwd)/example_datagraphs:/data mobilitydcat-validator \
-  --data /data/baseline-dcat-ap/ \
-  --shacl /validation/shacl/
-
-# With docker-compose
-docker-compose run validator --data /data/mobility/ --shacl /validation/shacl/
-```
-
-**Windows (PowerShell):**
-```powershell
-docker run -v ${PWD}/example_datagraphs:/data mobilitydcat-validator --data /data/ --shacl /validation/shacl/
-```
+**See [docs/README.md](docs/README.md) for full Docker guide**
 
 ## Documentation
 
-📖 **[Full Validation Guide](docs/README.md)** - Detailed instructions, test categories, and Issue #160 status
+**[Full Validation Guide](docs/README.md)** - Detailed instructions, Docker guide, test categories, and Issue #160 status
 
 ## Structure
 ```
 validation/
-├── scripts/
-│   └── validate.py           # Validation script
-├── shacl/
-│   ├── mobilitydcat-ap-shacl.ttl        # Main validation rules
-│   └── mobilitydcat-ap-shacl-ranges.ttl # Type constraints
-├── example_datagraphs/
-│   ├── baseline-dcat-ap/     # Base DCAT-AP tests
-│   ├── mobility/             # Mobility-specific tests
-│   ├── multilingual/         # Language validation tests
-│   ├── partial_graphs/       # Individual class tests
-│   ├── ranges/               # Type constraint tests
-│   ├── vocabularies/         # Controlled vocabulary tests
-│   └── regression/           # Bug regression tests
-└── docs/                     # Detailed documentation
+├── scripts/validate.py       # Validation script
+├── shacl/                    # SHACL shapes
+├── example_datagraphs/       # Test cases
+└── docs/                     # Documentation
 ```
 
-## Test Naming Convention
+## Related Projects
 
-- `B-*` - Baseline DCAT-AP tests
-- `M-*` - Mobility-specific tests
-- `L-*` - Language/multilingual tests
-- `P-*` - Partial graph tests
-- `R-*` - Range constraint tests
-- `V-*` - Vocabulary tests
-- `RG-*` - Regression tests
+- **[mobilityDCAT-AP Specification](https://github.com/mobilityDCAT-AP/mobilityDCAT-AP)** - Main specification repository
+- **[mobilityDCAT-AP 1.1.0](https://w3id.org/mobilitydcat-ap/releases/1.1.0/)** - Official specification
+- **[DCAT-AP 3.0.1](https://semiceu.github.io/DCAT-AP/releases/3.0.1/)** - Base DCAT-AP standard
 
-Each category has:
-- `*-N-*` - Negative tests (should detect violations)
-- `*-P-*` - Positive tests (should pass validation)
+## Technologies
 
-## Specification Alignment
-
-- [mobilityDCAT-AP 1.1.0](https://w3id.org/mobilitydcat-ap/releases/1.1.0/)
-- [DCAT-AP 3.0.1](https://semiceu.github.io/DCAT-AP/releases/3.0.1/)
+- **Python 3.11+** - Core language
+- **[pyshacl](https://github.com/RDFLib/pySHACL)** - SHACL validation engine
+- **[rdflib](https://github.com/RDFLib/rdflib)** - RDF graph manipulation
+- **[uv](https://github.com/astral-sh/uv)** - Fast Python package manager
+- **Docker** - Containerized validation
 
 ## Contributing
 
