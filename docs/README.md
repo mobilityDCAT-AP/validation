@@ -38,6 +38,60 @@ uv run scripts/validate.py --data example_datagraphs/vocabularies/ --shacl shacl
 uv run scripts/validate.py --data example_datagraphs/ --shacl shacl/
 ```
 
+## Docker Usage
+
+### Build Image
+```bash
+docker build -t mobilitydcat-validator .
+```
+
+### Validate Files
+```bash
+# Single file
+docker run -v %cd%/example_datagraphs:/data mobilitydcat-validator \
+  --data /data/baseline-dcat-ap/negatives/B-N-01-missing-catalog-title.ttl \
+  --shacl /validation/shacl/
+
+# Directory
+docker run -v %cd%/example_datagraphs:/data mobilitydcat-validator \
+  --data /data/baseline-dcat-ap/ \
+  --shacl /validation/shacl/
+
+# Verbose output
+docker run -v %cd%/example_datagraphs:/data mobilitydcat-validator \
+  --data /data/mobility/ \
+  --shacl /validation/shacl/ \
+  -v
+```
+
+### Using Docker Compose
+```bash
+# Run validation
+docker-compose run validator --data /data/baseline-dcat-ap/ --shacl /validation/shacl/
+
+# Run mobility tests
+docker-compose run validator --data /data/mobility/ --shacl /validation/shacl/
+```
+
+### Platform-Specific Commands
+
+**Linux/Mac:**
+```bash
+docker run -v $(pwd)/example_datagraphs:/data mobilitydcat-validator --data /data/ --shacl /validation/shacl/
+```
+
+**Windows (CMD):**
+```cmd
+docker run -v %cd%/example_datagraphs:/data mobilitydcat-validator --data /data/ --shacl /validation/shacl/
+```
+
+**Windows (PowerShell):**
+```powershell
+docker run -v ${PWD}/example_datagraphs:/data mobilitydcat-validator --data /data/ --shacl /validation/shacl/
+```
+
+---
+
 ## Run Issue #160 Tests
 
 Validate specific test cases from Issue #160:
