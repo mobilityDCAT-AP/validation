@@ -20,8 +20,7 @@ uv run scripts/validate.py --data example_datagraphs/ --shacl shacl/
 
 ## Documentation
 
-📖 **[Full Validation Guide](docs/README.md)** - Detailed instructions, test categories, and Issue #160 status
-
+**[Full Validation Guide](docs/README.md)** - Detailed instructions, test categories, and Issue #160 status
 ## Structure
 ```
 validation/
