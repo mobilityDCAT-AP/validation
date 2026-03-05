@@ -1,27 +1,14 @@
-"""SHACL validation package"""
+"""mobilityDCAT-AP SHACL Validation Package"""
 
-from .graph_loader import (
-    load_graph_from_file, 
-    discover_rdf_files, 
-    LoadError,
-    RDF_FORMATS
-)
+from .graph_loader import load_graph_from_file, discover_rdf_files
 from .shacl_loader import load_shacl
-from .validator import (
-    validate_graph, 
-    validate_file, 
-    validate_multiple_files, 
-    ValidationResult
-)
+from .validator import validate_file, validate_graph, validate_multiple_files
 
 __all__ = [
     'load_graph_from_file',
     'discover_rdf_files',
-    'LoadError',
-    'RDF_FORMATS',
     'load_shacl',
-    'validate_graph',
     'validate_file',
-    'validate_multiple_files',
-    'ValidationResult',
+    'validate_graph',
+    'validate_multiple_files'
 ]

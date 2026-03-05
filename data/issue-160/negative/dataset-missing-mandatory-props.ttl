@@ -1,0 +1,7 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+# Issue #160 Case 6: Missing mandatory properties
+<http://example.org/dataset/1> a dcat:Dataset ;
+    dct:title "Incomplete Dataset"@en .
+    # MISSING: description, distribution, accrualPeriodicity, mobilityTheme, spatial, publisher

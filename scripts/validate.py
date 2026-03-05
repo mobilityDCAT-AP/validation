@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Main validation script - orchestrates all layers"""
+"""Main validation script - clean, detailed output"""
 
 import argparse
 from pathlib import Path
@@ -19,9 +19,15 @@ def validate_single_file(data_file, shacl_graph, verbose=False):
     print(f"{result.status():8} {data_file.name}")
     
     if verbose and not result.conforms:
-        print("\n--- Validation Report ---")
-        print(result.report_text)
-        print("--- End Report ---\n")
+        violations = result.get_violations()
+        if violations:
+            print(f"\n  Violations found: {len(violations)}")
+            for i, v in enumerate(violations, 1):
+                print(f"  [{i}] Property: {v.get('property', 'unknown')}")
+                print(f"      Constraint: {v.get('constraint', 'unknown')}")
+                if 'message' in v:
+                    print(f"      Message: {v['message'][:100]}")
+            print()
     
     return result.passed()
 
@@ -37,36 +43,77 @@ def validate_directory(data_dir, shacl_graph, verbose=False):
     
     results, errors = validate_multiple_files(rdf_files, shacl_graph)
     
-    # Show loading errors first
+    # Print errors first
     if errors:
-        print("❌ Loading Errors:")
+        print("=" * 80)
+        print("LOAD ERRORS")
+        print("=" * 80)
         for error in errors:
-            print(f"  {error}")
+            print(f"❌ {error}")
         print()
     
-    # Show validation results
-    passed = 0
-    failed = 0
+    # Group results
+    passed = [r for r in results if r.passed()]
+    failed = [r for r in results if not r.passed()]
     
-    for result in results:
-        rel_path = result.file_path.relative_to(data_dir)
-        print(f"{result.status():8} {rel_path}")
-        
-        if result.passed():
-            passed += 1
-        else:
-            failed += 1
-        
-        if verbose and not result.conforms:
-            print("\n--- Validation Report ---")
-            print(result.report_text)
-            print("--- End Report ---\n")
+    # Show passed tests
+    if passed:
+        print("=" * 80)
+        print("PASSED")
+        print("=" * 80)
+        for result in passed:
+            rel_path = result.file_path.relative_to(data_dir)
+            violations = result.get_violations()
+            if violations:
+                print(f"✓ {str(rel_path):<45} Detected {len(violations)} violation(s)")
+            else:
+                print(f"✓ {str(rel_path):<45} Valid")
+        print()
     
-    print(f"\n✓ Passed: {passed}  ✗ Failed: {failed}")
-    if errors:
-        print(f"⚠ Load errors: {len(errors)}")
+    # Show failed tests with details
+    if failed:
+        print("=" * 80)
+        print("FAILED")
+        print("=" * 80)
+        for result in failed:
+            rel_path = result.file_path.relative_to(data_dir)
+            print(f"\n✗ {rel_path}")
+            
+            if result.is_positive_test():
+                violations = result.get_violations()
+                if violations:
+                    print(f"  Expected: Valid")
+                    print(f"  Got:      {len(violations)} violation(s) found\n")
+                    for i, v in enumerate(violations, 1):
+                        prop = v.get('property', 'unknown')
+                        constraint = v.get('constraint', 'Unknown')
+                        print(f"  [{i}] Property: {prop}")
+                        print(f"      Constraint: {constraint}")
+                        if 'message' in v:
+                            msg = v['message'][:80]  # Truncate long messages
+                            print(f"      Message: {msg}")
+                        print()
+            else:
+                print(f"  Expected: Invalid (should have violations)")
+                print(f"  Got:      Valid (no violations detected)\n")
     
-    return failed == 0 and len(errors) == 0
+    # Summary
+    print("=" * 80)
+    print("SUMMARY")
+    print("=" * 80)
+    total = len(results)
+    passed_count = len(passed)
+    failed_count = len(failed)
+    error_count = len(errors)
+    
+    print(f"Total:    {total} file(s)")
+    print(f"✓ Passed: {passed_count}")
+    print(f"✗ Failed: {failed_count}")
+    if error_count:
+        print(f"❌ Errors: {error_count}")
+    print("=" * 80)
+    
+    return failed_count == 0 and error_count == 0
 
 def main():
     parser = argparse.ArgumentParser(
@@ -82,7 +129,7 @@ Examples:
   # Validate directory
   uv run scripts/validate.py --data data/ --shacl shacl/
 
-  # Show validation details
+  # Show verbose details
   uv run scripts/validate.py --data data/ --shacl shacl/ --verbose
 
   # Use defaults
@@ -109,7 +156,7 @@ Supported formats: .ttl, .rdf, .xml, .nt, .n3, .jsonld, .json, .trig, .nq
     parser.add_argument(
         '--verbose', '-v',
         action='store_true',
-        help='Show detailed validation reports'
+        help='Show detailed violation information'
     )
     
     args = parser.parse_args()
