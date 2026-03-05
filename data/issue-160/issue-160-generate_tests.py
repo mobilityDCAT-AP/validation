@@ -1,70 +1,44 @@
 #!/usr/bin/env python3
-"""
-Test generator for GitHub Issue #160
-Run from: data/issue-160/
-
-Usage:
-    python generate_tests.py
-    
-This will create:
-    positive/*.ttl  (valid test cases)
-    negative/*.ttl  (failing test cases)
-"""
-
+"""Precise test generator for Issue #160"""
 from pathlib import Path
 
-# Test cases from issue #160
 POSITIVE_TESTS = {
-    "dataset-complete-valid.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "dataset-valid.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix mobilitydcatap: <https://w3id.org/mobilitydcat-ap#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mdcat: <https://w3id.org/mobilitydcat-ap#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://example.org/dataset/1> a dcat:Dataset ;
-    dct:title "Bus Schedule Dataset"@en ;
-    dct:description "Complete bus schedule for city transport"@en ;
+    dct:title "Bus Schedule"@en ;
+    dct:description "Complete bus schedule"@en ;
     dct:publisher <http://example.org/publisher/1> ;
-    dct:spatial <http://example.org/spatial/bonn> ;
-    dcat:distribution <http://example.org/distribution/1> ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/DEU> ;
     dct:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/DAILY> ;
-    mobilitydcatap:mobilityTheme <https://w3id.org/mobilitydcat-ap/mobility-theme/road> .
+    mdcat:mobilityTheme <https://w3id.org/mobilitydcat-ap/mobility-theme/road> ;
+    dcat:distribution <http://example.org/dist/1> .
 
 <http://example.org/publisher/1> a foaf:Agent ;
-    foaf:name "City Transport Authority" .
+    foaf:name "Transport Authority" .
 
-<http://example.org/spatial/bonn> a dct:Location .
-
-<http://example.org/distribution/1> a dcat:Distribution ;
-    dcat:accessURL <http://example.org/data/bus-schedule> ;
+<http://example.org/dist/1> a dcat:Distribution ;
+    dcat:accessURL <http://example.org/data> ;
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON> ;
-    dct:rights <http://example.org/rights/1> ;
-    mobilitydcatap:mobilityDataStandard <https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs> .
+    mdcat:mobilityDataStandard <https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs> .
 
-<http://example.org/rights/1> a dct:RightsStatement .
+<http://publications.europa.eu/resource/authority/frequency/DAILY> a dct:Frequency .
+<https://w3id.org/mobilitydcat-ap/mobility-theme/road> a skos:Concept .
+<http://publications.europa.eu/resource/authority/file-type/JSON> a dct:MediaTypeOrExtent .
 """,
 
-    "catalogue-complete-valid.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "catalogue-valid.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/catalogue/1> a dcat:Catalog ;
-    dct:title "Mobility Data Portal"@en ;
-    dct:description "A portal providing datasets about mobility"@en ;
-    foaf:homepage <http://example.org/> ;
-    dct:spatial <http://example.org/spatial/germany> ;
-    dct:identifier "cat-mobility-001" ;
-    dcat:dataset <http://example.org/dataset/1> ;
-    dcat:record <http://example.org/record/1> .
-
-<http://example.org/record/1> a dcat:CatalogRecord ;
-    foaf:primaryTopic <http://example.org/dataset/1> ;
-    dct:language <http://publications.europa.eu/resource/authority/language/ENG> ;
-    dct:created "2025-01-01"^^xsd:date .
-
-<http://example.org/dataset/1> a dcat:Dataset .
-<http://example.org/spatial/germany> a dct:Location .
+<http://example.org/cat/1> a dcat:Catalog ;
+    dct:title "Mobility Portal"@en ;
+    dct:description "Mobility data portal"@en ;
+    foaf:homepage <http://example.org/> .
 """,
 }
 
@@ -72,184 +46,99 @@ NEGATIVE_TESTS = {
     "dataset-missing-distribution.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix mobilitydcatap: <https://w3id.org/mobilitydcat-ap#> .
+@prefix mdcat: <https://w3id.org/mobilitydcat-ap#> .
 
-# Issue #160 Case 1: Missing Distribution
 <http://example.org/dataset/1> a dcat:Dataset ;
-    dct:title "Bus Schedule"@en ;
-    dct:description "Bus schedule data"@en ;
-    dct:publisher <http://example.org/publisher/1> ;
-    dct:spatial <http://example.org/spatial/1> ;
+    dct:title "Dataset"@en ;
+    dct:description "Description"@en ;
+    dct:publisher <http://example.org/pub/1> ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/DEU> ;
     dct:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/DAILY> ;
-    mobilitydcatap:mobilityTheme <https://w3id.org/mobilitydcat-ap/mobility-theme/road> .
-    # MISSING: dcat:distribution
+    mdcat:mobilityTheme <https://w3id.org/mobilitydcat-ap/mobility-theme/road> .
 
-<http://example.org/publisher/1> a foaf:Agent ;
-    foaf:name "Publisher" .
-<http://example.org/spatial/1> a dct:Location .
+<http://example.org/pub/1> a foaf:Agent ; foaf:name "Publisher" .
 """,
 
-    "catalogue-missing-language-tag.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "catalogue-no-language-tag.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# Issue #160 Case 2: Missing Language Tag
-<http://example.org/catalogue/1> a dcat:Catalog ;
-    dct:title "Mobility Data Portal" ;
-    # MISSING: @en language tag
-    dct:description "A portal providing datasets about mobility"@en ;
-    foaf:homepage <http://example.org/> ;
-    dct:spatial <http://example.org/spatial/1> ;
-    dct:identifier "cat-001" ;
-    dcat:dataset <http://example.org/dataset/1> ;
-    dcat:record <http://example.org/record/1> .
-
-<http://example.org/record/1> a dcat:CatalogRecord ;
-    foaf:primaryTopic <http://example.org/dataset/1> ;
-    dct:language <http://publications.europa.eu/resource/authority/language/ENG> ;
-    dct:created "2025-01-01"^^xsd:date .
-
-<http://example.org/dataset/1> a dcat:Dataset .
-<http://example.org/spatial/1> a dct:Location .
+<http://example.org/cat/1> a dcat:Catalog ;
+    dct:title "Portal" ;
+    dct:description "Description"@en ;
+    foaf:homepage <http://example.org/> .
 """,
 
     "catalogue-empty-description.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# Issue #160 Case 4: Empty literal
-<http://example.org/catalogue/1> a dcat:Catalog ;
-    dct:title "Mobility Data Portal"@en ;
+<http://example.org/cat/1> a dcat:Catalog ;
+    dct:title "Portal"@en ;
     dct:description ""@en ;
-    # INVALID: Empty literal
-    foaf:homepage <http://example.org/> ;
-    dct:spatial <http://example.org/spatial/1> ;
-    dct:identifier "cat-001" ;
-    dcat:dataset <http://example.org/dataset/1> ;
-    dcat:record <http://example.org/record/1> .
-
-<http://example.org/record/1> a dcat:CatalogRecord ;
-    foaf:primaryTopic <http://example.org/dataset/1> ;
-    dct:language <http://publications.europa.eu/resource/authority/language/ENG> ;
-    dct:created "2025-01-01"^^xsd:date .
-
-<http://example.org/dataset/1> a dcat:Dataset .
-<http://example.org/spatial/1> a dct:Location .
+    foaf:homepage <http://example.org/> .
 """,
 
-    "catalogue-invalid-language-tag.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "catalogue-invalid-language.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# Issue #160 Case 5: Invalid language tag
-<http://example.org/catalogue/1> a dcat:Catalog ;
-    dct:title "Mobility Data Portal"@english ;
-    # INVALID: @english instead of @en
-    dct:description "A portal"@en ;
-    foaf:homepage <http://example.org/> ;
-    dct:spatial <http://example.org/spatial/1> ;
-    dct:identifier "cat-001" ;
-    dcat:dataset <http://example.org/dataset/1> ;
-    dcat:record <http://example.org/record/1> .
-
-<http://example.org/record/1> a dcat:CatalogRecord ;
-    foaf:primaryTopic <http://example.org/dataset/1> ;
-    dct:language <http://publications.europa.eu/resource/authority/language/ENG> ;
-    dct:created "2025-01-01"^^xsd:date .
-
-<http://example.org/dataset/1> a dcat:Dataset .
-<http://example.org/spatial/1> a dct:Location .
+<http://example.org/cat/1> a dcat:Catalog ;
+    dct:title "Portal"@english ;
+    dct:description "Description"@en ;
+    foaf:homepage <http://example.org/> .
 """,
 
-    "dataset-missing-mandatory-props.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "dataset-missing-properties.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 
-# Issue #160 Case 6: Missing mandatory properties
 <http://example.org/dataset/1> a dcat:Dataset ;
-    dct:title "Incomplete Dataset"@en .
-    # MISSING: description, distribution, accrualPeriodicity, mobilityTheme, spatial, publisher
+    dct:title "Dataset"@en .
 """,
 
-    "distribution-invalid-format-uri.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "distribution-invalid-format.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix mobilitydcatap: <https://w3id.org/mobilitydcat-ap#> .
+@prefix mdcat: <https://w3id.org/mobilitydcat-ap#> .
 
-# Issue #160 Case 9: Invalid format URI
-<http://example.org/distribution/1> a dcat:Distribution ;
-    dcat:accessURL <https://example.org/data/train_schedule.zip> ;
-    dct:format <https://example.com/formats/ZIP> ;
-    # INVALID: Not from http://publications.europa.eu/resource/authority/file-type/*
-    dct:rights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
-    mobilitydcatap:mobilityDataStandard <https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs> .
+<http://example.org/dist/1> a dcat:Distribution ;
+    dcat:accessURL <http://example.org/data> ;
+    dct:format <https://invalid.com/ZIP> ;
+    mdcat:mobilityDataStandard <https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs> .
 """,
 
-    "distribution-missing-access-url.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "distribution-no-access-url.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix mobilitydcatap: <https://w3id.org/mobilitydcat-ap#> .
+@prefix mdcat: <https://w3id.org/mobilitydcat-ap#> .
 
-# Missing accessURL
-<http://example.org/distribution/1> a dcat:Distribution ;
+<http://example.org/dist/1> a dcat:Distribution ;
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON> ;
-    dct:rights <http://example.org/rights/1> ;
-    mobilitydcatap:mobilityDataStandard <https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs> .
-    # MISSING: dcat:accessURL
-
-<http://example.org/rights/1> a dct:RightsStatement .
+    mdcat:mobilityDataStandard <https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs> .
 """,
 
-    "catalogue-missing-homepage.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
+    "catalogue-no-homepage.ttl": """@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# Missing homepage
-<http://example.org/catalogue/1> a dcat:Catalog ;
-    dct:title "Catalogue"@en ;
-    dct:description "A catalogue"@en ;
-    dct:spatial <http://example.org/spatial/1> ;
-    dct:identifier "cat-001" ;
-    dcat:dataset <http://example.org/dataset/1> ;
-    dcat:record <http://example.org/record/1> .
-    # MISSING: foaf:homepage
-
-<http://example.org/record/1> a dcat:CatalogRecord ;
-    foaf:primaryTopic <http://example.org/dataset/1> ;
-    dct:language <http://publications.europa.eu/resource/authority/language/ENG> ;
-    dct:created "2025-01-01"^^xsd:date .
-
-<http://example.org/dataset/1> a dcat:Dataset .
-<http://example.org/spatial/1> a dct:Location .
+<http://example.org/cat/1> a dcat:Catalog ;
+    dct:title "Portal"@en ;
+    dct:description "Description"@en .
 """,
 }
 
 def main():
-    """Generate test files in current directory"""
-    
-    # Create positive tests
     pos_dir = Path("positive")
-    pos_dir.mkdir(exist_ok=True)
-    
-    for filename, content in POSITIVE_TESTS.items():
-        filepath = pos_dir / filename
-        filepath.write_text(content)
-        print(f"✓ {filepath}")
-    
-    # Create negative tests
     neg_dir = Path("negative")
+    pos_dir.mkdir(exist_ok=True)
     neg_dir.mkdir(exist_ok=True)
     
-    for filename, content in NEGATIVE_TESTS.items():
-        filepath = neg_dir / filename
-        filepath.write_text(content)
-        print(f"✓ {filepath}")
+    for name, content in POSITIVE_TESTS.items():
+        (pos_dir / name).write_text(content)
+        print(f"✓ positive/{name}")
     
-    print(f"\n✓ Generated {len(POSITIVE_TESTS)} positive and {len(NEGATIVE_TESTS)} negative tests")
-    print("\nTo validate:")
-    print("  cd ../..")
-    print("  uv run scripts/validate.py --data data/issue-160/ --shacl shacl/ --verbose")
+    for name, content in NEGATIVE_TESTS.items():
+        (neg_dir / name).write_text(content)
+        print(f"✓ negative/{name}")
+    
+    print(f"\n✓ {len(POSITIVE_TESTS)} positive, {len(NEGATIVE_TESTS)} negative")
 
 if __name__ == "__main__":
     main()

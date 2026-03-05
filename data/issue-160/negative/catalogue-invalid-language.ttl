@@ -3,6 +3,6 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
 <http://example.org/cat/1> a dcat:Catalog ;
-    dct:title "Portal"@en ;
-    dct:description ""@en ;
+    dct:title "Portal"@english ;
+    dct:description "Description"@en ;
     foaf:homepage <http://example.org/> .
