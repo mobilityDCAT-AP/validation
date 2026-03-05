@@ -18,9 +18,38 @@ uv run scripts/validate.py --data example_datagraphs/baseline-dcat-ap/negatives/
 uv run scripts/validate.py --data example_datagraphs/ --shacl shacl/
 ```
 
+## Docker Usage
+
+### Build
+```bash
+docker build -t mobilitydcat-validator .
+```
+
+### Run
+```bash
+# Validate file
+docker run -v $(pwd)/example_datagraphs:/data mobilitydcat-validator \
+  --data /data/baseline-dcat-ap/negatives/B-N-01-missing-catalog-title.ttl \
+  --shacl /validation/shacl/
+
+# Run all tests
+docker run -v $(pwd)/example_datagraphs:/data mobilitydcat-validator \
+  --data /data/baseline-dcat-ap/ \
+  --shacl /validation/shacl/
+
+# With docker-compose
+docker-compose run validator --data /data/mobility/ --shacl /validation/shacl/
+```
+
+**Windows (PowerShell):**
+```powershell
+docker run -v ${PWD}/example_datagraphs:/data mobilitydcat-validator --data /data/ --shacl /validation/shacl/
+```
+
 ## Documentation
 
-**[Full Validation Guide](docs/README.md)** - Detailed instructions, test categories, and Issue #160 status
+📖 **[Full Validation Guide](docs/README.md)** - Detailed instructions, test categories, and Issue #160 status
+
 ## Structure
 ```
 validation/

@@ -1,0 +1,10 @@
+
+.venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+*.md
+docs/
+example_datagraphs/
+data/

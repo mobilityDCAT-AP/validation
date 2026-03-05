@@ -60,9 +60,9 @@ uv run scripts/validate.py --data example_datagraphs/partial_graphs/negatives/P-
 
 ## Expected Results
 
-**Negative tests (N-*)**: Should detect violations  
-**Positive tests (P-*)**: Currently incomplete - missing mandatory properties  
-**Baseline DCAT-AP positives (B-P-*)**: Expected to fail (missing mobilityDCAT-AP mandatory properties like mobilityTheme, spatial, accrualPeriodicity)
+✓ **Negative tests (N-*)**: Should detect violations  
+⚠️ **Positive tests (P-*)**: Currently incomplete - missing mandatory properties  
+✗ **Baseline DCAT-AP positives (B-P-*)**: Expected to fail (missing mobilityDCAT-AP mandatory properties like mobilityTheme, spatial, accrualPeriodicity)
 
 ## Test Categories
 
