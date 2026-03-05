@@ -1,0 +1,15 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix locn: <http://www.w3.org/ns/locn#> .
+@prefix ex:   <https://example.org/data/> .
+
+ex:catalog1 a dcat:Catalog ;
+    dct:title "Mobility Data Catalog"@en ;
+    dct:publisher ex:agent1 ;
+    dct:spatial ex:spatial1 .
+
+ex:spatial1 a dct:Location ;
+    locn:geometry "POINT(13.4050 52.5200)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
+
+ex:agent1 a <http://xmlns.com/foaf/0.1/Agent> ;
+    <http://xmlns.com/foaf/0.1/name> "City Transport Authority"@en .

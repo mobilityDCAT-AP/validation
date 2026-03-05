@@ -1,0 +1,14 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix ex:   <https://example.org/data/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ex:record1 a dcat:CatalogRecord ;
+    foaf:primaryTopic ex:dataset1 ;
+    dct:created "2025-01-01"^^xsd:date ;
+    dct:language <http://id.loc.gov/vocabulary/iso639-1/en> ;
+    dct:modified "2025-01-02"^^xsd:date .
+
+ex:dataset1 a dcat:Dataset ;
+    dct:title "GTFS Dataset"@en .
