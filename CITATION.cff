@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: mobilityDCAT-AP SHACL Validation
+type: software
+authors:
+  - family-names: Mustafa
+    given-names: Daham Mohammed
+    affiliation: Fraunhofer Institute for Applied Information Technology FIT
+  - family-names: Molinas Comet
+    given-names: Lina Teresa
+    affiliation: Fraunhofer Institute for Applied Information Technology FIT
+  - family-names: Scrocca
+    given-names: Mario
+    affiliation: Cefriel
+repository-code: https://github.com/mobilityDCAT-AP/validation
+url: https://mobilitydcat-ap.github.io/mobilityDCAT-AP/
+license: CC-BY-4.0
