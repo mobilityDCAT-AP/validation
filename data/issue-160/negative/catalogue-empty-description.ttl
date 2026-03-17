@@ -1,8 +1,0 @@
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
-@prefix dct: <http://purl.org/dc/terms/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-
-<http://example.org/cat/1> a dcat:Catalog ;
-    dct:title "Portal"@en ;
-    dct:description ""@en ;
-    foaf:homepage <http://example.org/> .
