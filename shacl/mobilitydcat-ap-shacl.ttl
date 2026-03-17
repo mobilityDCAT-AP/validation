@@ -1058,7 +1058,7 @@
   sh:minCount 1 ;
   sh:maxCount 1 ;
   sh:nodeKind sh:BlankNodeOrIRI ;
-  sh:pattern "^http://publications\\.europa\\.eu/resource/authority/file-type/.+$" ;  # ✅ ADD THIS
+  sh:pattern "^http://publications\\.europa\\.eu/resource/authority/file-type/.+$" ;  #  ADD THIS
   sh:name "format"@en ;
   sh:description "The technical syntax of the delivered content. Made mandatory in mobilityDCAT-AP (§4.11.1). Must be from EU File Type vocabulary (§5.2)."@en ;
   sh:message "Format is mandatory. Exactly one format from http://publications.europa.eu/resource/authority/file-type/* must be provided"@en ;
