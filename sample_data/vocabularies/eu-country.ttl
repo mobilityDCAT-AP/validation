@@ -1,0 +1,12 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+<http://publications.europa.eu/resource/authority/country>
+  a skos:ConceptScheme ;
+  dct:title "Countries"@en .
+
+<http://publications.europa.eu/resource/authority/country/DEU>
+  a skos:Concept ;
+  a dct:Location ;
+  skos:prefLabel "Germany"@en ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/country> .

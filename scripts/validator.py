@@ -91,44 +91,34 @@ def validate_graph(data_graph, shacl_graph, inference='rdfs'):
     
     return ValidationResult(conforms, results_graph, report_text)
 
-def validate_file(file_path, shacl_graph, inference='rdfs'):
-    """
-    Validate a file against SHACL shapes
-    
-    Returns:
-        tuple: (ValidationResult or None, LoadError or None)
-    """
+def validate_file(file_path, shacl_graph, inference='rdfs', extra_graph=None):
     from graph_loader import load_graph_from_file
-    
+    from rdflib import Graph
+
     data_graph, load_error = load_graph_from_file(file_path)
-    
     if load_error:
         return None, load_error
-    
+
+    # Merge vocabulary stubs into data graph
+    if extra_graph:
+        data_graph += extra_graph
+
     conforms, results_graph, report_text = validate(
         data_graph,
         shacl_graph=shacl_graph,
         inference=inference,
         abort_on_first=False
     )
-    
     return ValidationResult(conforms, results_graph, report_text, file_path), None
 
-def validate_multiple_files(file_paths, shacl_graph, inference='rdfs'):
-    """
-    Validate multiple files
-    
-    Returns:
-        tuple: (list of ValidationResults, list of LoadErrors)
-    """
+
+def validate_multiple_files(file_paths, shacl_graph, inference='rdfs', extra_graph=None):
     results = []
     errors = []
-    
     for file_path in file_paths:
-        result, error = validate_file(file_path, shacl_graph, inference)
+        result, error = validate_file(file_path, shacl_graph, inference, extra_graph)
         if result:
             results.append(result)
         else:
             errors.append(error)
-    
     return results, errors

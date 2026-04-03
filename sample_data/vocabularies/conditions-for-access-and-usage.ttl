@@ -1,0 +1,11 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+<https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage>
+  a skos:ConceptScheme ;
+  dct:title "Conditions for access and usage"@en .
+
+<https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage/free-of-charge>
+  a skos:Concept ;
+  skos:prefLabel "Free of charge"@en ;
+  skos:inScheme <https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage> .

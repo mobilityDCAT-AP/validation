@@ -1,0 +1,13 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix mobilitydcatap: <https://w3id.org/mobilitydcat-ap#> .
+
+<https://w3id.org/mobilitydcat-ap/mobility-data-standard>
+  a skos:ConceptScheme ;
+  dct:title "Mobility Data Standard"@en .
+
+<https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs>
+  a skos:Concept ;
+  a mobilitydcatap:MobilityDataStandard ;
+  skos:prefLabel "GTFS"@en ;
+  skos:inScheme <https://w3id.org/mobilitydcat-ap/mobility-data-standard> .

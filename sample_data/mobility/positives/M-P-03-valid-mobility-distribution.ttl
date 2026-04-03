@@ -1,16 +1,28 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
-@prefix dct:  <http://purl.org/dc/terms/> .
-@prefix ex:   <https://example.org/data/> .
-@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
-@prefix mobilitydcatap: <https://w3id.org/mobilitydcat-ap/ns#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix ex: <https://example.org/data/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mobilitydcatap: <https://w3id.org/mobilitydcat-ap#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-ex:dataset1 a dcat:Dataset ;
-    dct:title "GTFS Schedules"@en ;
-    dcat:distribution ex:distribution1 .
+ex:dataset1
+  a dcat:Dataset ;
+  dct:title "GTFS Schedules"@en ;
+  dct:description "Public transport schedules in GTFS format."@en ;
+  dct:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/DAILY> ;
+  mobilitydcatap:mobilityTheme <https://w3id.org/mobilitydcat-ap/mobility-theme/passenger-transport> ;
+  dct:spatial <http://publications.europa.eu/resource/authority/country/DEU> ;
+  dct:publisher <http://publications.europa.eu/resource/authority/corporate-body/AGENTEXA> ;
+  dcat:distribution ex:distribution1 .
 
-ex:distribution1 a dcat:Distribution ;
-    dcat:accessURL <https://example.org/downloads/gtfs.zip> ;
-    dct:format <http://publications.europa.eu/resource/authority/file-type/ZIP> ;
-    dct:rights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
-    mobilitydcatap:mobilityDataStandard
-        <http://publications.europa.eu/resource/authority/mobility-data-standard/GTFS> .
+ex:distribution1
+  a dcat:Distribution ;
+  dcat:accessURL <https://example.org/downloads/gtfs.zip> ;
+  dct:format <http://publications.europa.eu/resource/authority/file-type/ZIP> ;
+  dct:rights ex:rights1 ;
+  mobilitydcatap:mobilityDataStandard
+    <https://w3id.org/mobilitydcat-ap/mobility-data-standard/gtfs> .
+
+ex:rights1
+  a dct:RightsStatement ;
+  dct:type <https://w3id.org/mobilitydcat-ap/conditions-for-access-and-usage/free-of-charge> .

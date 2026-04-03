@@ -1,0 +1,14 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://publications.europa.eu/resource/authority/corporate-body>
+  a skos:ConceptScheme ;
+  dct:title "Corporate body"@en .
+
+<http://publications.europa.eu/resource/authority/corporate-body/AGENTEXA>
+  a skos:Concept ;
+  a foaf:Agent ;
+  skos:prefLabel "Example Transport Agency"@en ;
+  foaf:name "Example Transport Agency"@en ;
+  skos:inScheme <http://publications.europa.eu/resource/authority/corporate-body> .
