@@ -218,7 +218,7 @@ def validate_directory(
     write_detailed_report(report_file, data_dir, results, errors)
     print(f"Detailed report: {report_file}\n")
 
-    return error_count == 0
+    return invalid_count == 0 and error_count == 0
 
 
 def main():
