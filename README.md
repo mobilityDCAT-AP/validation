@@ -59,7 +59,7 @@ Report behavior:
 - Full violation details are always written to a report file.
 - Default report path (if `--report-file` is omitted): `logs/validation-report.txt`.
 
-Supported ontology serializations:
+Supported RDF serializations:
 - The validator accepts multiple RDF serializations in one run, including `.ttl`, `.rdf`, `.xml`, `.nt`, `.n3`, `.jsonld`, `.json`, `.trig`, and `.nq`.
 - You can point `--data` to a directory containing mixed formats; all supported files are discovered and validated.
 
