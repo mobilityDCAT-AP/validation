@@ -98,6 +98,7 @@ def _validate_with_timeout(data_graph, shacl_graph, inference='rdfs', timeout_se
         raise ValidationTimeoutError(f"Validation timed out after {timeout_seconds}s")
 
     previous_handler = signal.getsignal(signal.SIGALRM)
+    previous_timer = signal.getitimer(signal.ITIMER_REAL)
     try:
         signal.signal(signal.SIGALRM, _handle_timeout)
         signal.setitimer(signal.ITIMER_REAL, timeout_seconds)
@@ -108,7 +109,7 @@ def _validate_with_timeout(data_graph, shacl_graph, inference='rdfs', timeout_se
             abort_on_first=False
         )
     finally:
-        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.setitimer(signal.ITIMER_REAL, previous_timer[0], previous_timer[1])
         signal.signal(signal.SIGALRM, previous_handler)
 
 def validate_file(file_path, shacl_graph, inference='rdfs', extra_graph=None, timeout_seconds=0):
