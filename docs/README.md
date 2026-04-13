@@ -14,6 +14,66 @@ uv run scripts/validate.py --data sample_data/baseline-dcat-ap/negatives/B-N-01-
 uv run scripts/validate.py --data sample_data/mobility/negatives/M-N-01-missing-mandatory-properties-dataset.ttl --shacl shacl/ -v
 ```
 
+## CLI Options
+
+Show all options:
+```bash
+uv run scripts/validate.py --help
+```
+
+Minimal default run:
+```bash
+uv run scripts/validate.py
+```
+
+Defaults used in minimal run:
+- `--data data/`
+- `--shacl shacl/`
+- `--vocab sample_data/vocabularies/`
+- `--report-file logs/validation-report.txt`
+
+Current key options:
+- `--data`: Path to RDF file or directory
+- `--shacl`: Path to SHACL file or directory
+- `--vocab`: Path to vocabulary stubs directory (default: `sample_data/vocabularies`)
+- `--verbose` / `--no-verbose`: Toggle detailed violation output in terminal
+- `--progress` / `--no-progress`: Toggle per-file progress output for directory validation
+- `--timeout`: Per-file timeout in seconds (`0` disables timeout)
+- `--max-files-report`: Safety option to cap VALID/INVALID terminal output and keep VS Code responsive on large runs (`0` means unlimited)
+- `--report-file`: Write full detailed report (default: `logs/validation-report.txt`)
+
+Why `--vocab` is important:
+- Several shapes expect terms from external controlled vocabularies to be present as RDF resources.
+- Common examples include EU file types, EU frequency values, and mobility theme concepts.
+- The validator reads all `.ttl` files from the `--vocab` folder and merges them into each input graph before validation.
+- This helps avoid false negatives/positives caused by unresolved vocabulary resources in class/range constraints.
+- Keep the default in normal runs; set a custom `--vocab` path when you need to validate against another vocabulary snapshot.
+
+Notes:
+- Terminal output is intentionally compact by default for stability on large runs.
+- Full violation details are written to the report file.
+
+Supported ontology serializations:
+- Validation supports multiple RDF serializations: `.ttl`, `.rdf`, `.xml`, `.nt`, `.n3`, `.jsonld`, `.json`, `.trig`, and `.nq`.
+- A single directory run can include mixed serializations; all supported files are discovered automatically.
+
+Example with explicit report file:
+```bash
+uv run scripts/validate.py \
+  --data sample_data/ \
+  --shacl shacl/
+```
+
+Optional tuning example:
+```bash
+uv run scripts/validate.py \
+  --data sample_data/ \
+  --shacl shacl/ \
+  --timeout 30 \
+  --max-files-report 50 \
+  --report-file logs/validation-report-latest.txt
+```
+
 ## Run All Test Suites
 ```bash
 # All baseline DCAT-AP tests
