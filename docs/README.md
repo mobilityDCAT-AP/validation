@@ -53,7 +53,7 @@ Notes:
 - Terminal output is intentionally compact by default for stability on large runs.
 - Full violation details are written to the report file.
 
-Supported ontology serializations:
+Supported RDF serializations:
 - Validation supports multiple RDF serializations: `.ttl`, `.rdf`, `.xml`, `.nt`, `.n3`, `.jsonld`, `.json`, `.trig`, and `.nq`.
 - A single directory run can include mixed serializations; all supported files are discovered automatically.
 
