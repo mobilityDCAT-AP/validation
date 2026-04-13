@@ -24,5 +24,6 @@ Thumbs.db
 
 # Validation outputs
 reports/
+/logs/
 *.log
 validation_results*.txt

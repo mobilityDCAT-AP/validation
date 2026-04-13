@@ -2,6 +2,12 @@
 
 Validation suite for mobilityDCAT-AP 1.1.0 compliance using SHACL shapes.
 
+## Workflows
+
+This repository has two separate CLI workflows:
+- Universal validation: `scripts/validate.py` (pure SHACL conformance checks)
+- Suite testing: `scripts/validate_suite.py` (expects `positives`/`negatives` folder semantics)
+
 ## Quick Start
 ```bash
 # Install dependencies
@@ -14,28 +20,96 @@ uv run scripts/validate.py --data sample_data/baseline-dcat-ap/negatives/B-N-01-
 uv run scripts/validate.py --data sample_data/mobility/negatives/M-N-01-missing-mandatory-properties-dataset.ttl --shacl shacl/ -v
 ```
 
+## CLI Options
+
+Show all options:
+```bash
+uv run scripts/validate.py --help
+```
+
+Show suite tester options:
+```bash
+uv run scripts/validate_suite.py --help
+```
+
+Minimal default run:
+```bash
+uv run scripts/validate.py
+```
+
+Defaults used in minimal run:
+- `--data data/`
+- `--shacl shacl/`
+- `--vocab sample_data/vocabularies/`
+- `--report-file logs/validation-report.txt`
+
+Current key options:
+- `--data`: Path to RDF file or directory
+- `--shacl`: Path to SHACL file or directory
+- `--vocab`: Path to vocabulary stubs directory (default: `sample_data/vocabularies`)
+- `--verbose` / `--no-verbose`: Toggle detailed violation output in terminal
+- `--progress` / `--no-progress`: Toggle per-file progress output for directory validation
+- `--timeout`: Per-file timeout in seconds (`0` disables timeout)
+- `--max-files-report`: Safety option to cap VALID/INVALID terminal output and keep VS Code responsive on large runs (`0` means unlimited)
+- `--report-file`: Write full detailed report (default: `logs/validation-report.txt`)
+
+Why `--vocab` is important:
+- Several shapes expect terms from external controlled vocabularies to be present as RDF resources.
+- Common examples include EU file types, EU frequency values, and mobility theme concepts.
+- The validator reads all `.ttl` files from the `--vocab` folder and merges them into each input graph before validation.
+- This helps avoid false negatives/positives caused by unresolved vocabulary resources in class/range constraints.
+- Keep the default in normal runs; set a custom `--vocab` path when you need to validate against another vocabulary snapshot.
+
+Notes:
+- Terminal output is intentionally compact by default for stability on large runs.
+- Full violation details are written to the report file.
+
+Supported RDF serializations:
+- Validation supports multiple RDF serializations: `.ttl`, `.rdf`, `.xml`, `.nt`, `.n3`, `.jsonld`, `.json`, `.trig`, and `.nq`.
+- A single directory run can include mixed serializations; all supported files are discovered automatically.
+
+Example with explicit report file:
+```bash
+uv run scripts/validate.py \
+  --data sample_data/ \
+  --shacl shacl/ \
+  --report-file logs/validation-report.txt
+```
+
+Optional tuning example:
+```bash
+uv run scripts/validate.py \
+  --data sample_data/ \
+  --shacl shacl/ \
+  --timeout 30 \
+  --max-files-report 50 \
+  --report-file logs/validation-report-latest.txt
+```
+
 ## Run All Test Suites
+
+Use the dedicated suite runner so expectations are evaluated from `positives`/`negatives` paths:
 ```bash
 # All baseline DCAT-AP tests
-uv run scripts/validate.py --data sample_data/baseline-dcat-ap/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/baseline-dcat-ap/ --shacl shacl/
 
 # All mobility-specific tests
-uv run scripts/validate.py --data sample_data/mobility/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/mobility/ --shacl shacl/
 
 # All multilingual tests
-uv run scripts/validate.py --data sample_data/multilingual/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/multilingual/ --shacl shacl/
 
 # All partial graph tests
-uv run scripts/validate.py --data sample_data/partial_graphs/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/partial_graphs/ --shacl shacl/
 
 # All range constraint tests
-uv run scripts/validate.py --data sample_data/ranges/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/ranges/ --shacl shacl/
 
 # All vocabulary tests
-uv run scripts/validate.py --data sample_data/vocabularies/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/vocabularies/ --shacl shacl/
 
 # Run everything
-uv run scripts/validate.py --data sample_data/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/ --shacl shacl/
 ```
 
 ## Docker Usage

@@ -1,9 +1,14 @@
 """SHACL validation logic with detailed violation reporting"""
 
+import signal
 from pyshacl import validate
 from rdflib import Namespace
 
 SH = Namespace("http://www.w3.org/ns/shacl#")
+
+
+class ValidationTimeoutError(Exception):
+    """Raised when SHACL validation exceeds the configured timeout."""
 
 class ValidationResult:
     """Holds validation results with violation details"""
@@ -15,30 +20,9 @@ class ValidationResult:
         self.file_path = file_path
         self._violations = None
     
-    def is_positive_test(self):
-        """Check if this is a positive test case"""
-        if self.file_path:
-            return "positive" in str(self.file_path)
-        return False
-    
-    def is_negative_test(self):
-        """Check if this is a negative test case"""
-        if self.file_path:
-            return "negative" in str(self.file_path)
-        return False
-    
-    def passed(self):
-        """Check if test passed based on expected outcome"""
-        if self.is_positive_test():
-            return self.conforms
-        elif self.is_negative_test():
-            return not self.conforms
-        else:
-            return self.conforms
-    
     def status(self):
-        """Get status string"""
-        return "✓ PASS" if self.passed() else "✗ FAIL"
+        """Get status string based on conformance"""
+        return "✓ Valid" if self.conforms else "✗ Invalid"
     
     def get_violations(self):
         """Extract violation details from results graph"""
@@ -91,9 +75,45 @@ def validate_graph(data_graph, shacl_graph, inference='rdfs'):
     
     return ValidationResult(conforms, results_graph, report_text)
 
-def validate_file(file_path, shacl_graph, inference='rdfs', extra_graph=None):
-    from graph_loader import load_graph_from_file
-    from rdflib import Graph
+
+def _validate_with_timeout(data_graph, shacl_graph, inference='rdfs', timeout_seconds=0):
+    """Run pySHACL with optional Unix signal timeout."""
+    if not timeout_seconds or timeout_seconds <= 0:
+        return validate(
+            data_graph,
+            shacl_graph=shacl_graph,
+            inference=inference,
+            abort_on_first=False
+        )
+
+    if not hasattr(signal, 'SIGALRM'):
+        return validate(
+            data_graph,
+            shacl_graph=shacl_graph,
+            inference=inference,
+            abort_on_first=False
+        )
+
+    def _handle_timeout(signum, frame):
+        raise ValidationTimeoutError(f"Validation timed out after {timeout_seconds}s")
+
+    previous_handler = signal.getsignal(signal.SIGALRM)
+    previous_timer = signal.getitimer(signal.ITIMER_REAL)
+    try:
+        signal.signal(signal.SIGALRM, _handle_timeout)
+        signal.setitimer(signal.ITIMER_REAL, timeout_seconds)
+        return validate(
+            data_graph,
+            shacl_graph=shacl_graph,
+            inference=inference,
+            abort_on_first=False
+        )
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, previous_timer[0], previous_timer[1])
+        signal.signal(signal.SIGALRM, previous_handler)
+
+def validate_file(file_path, shacl_graph, inference='rdfs', extra_graph=None, timeout_seconds=0):
+    from graph_loader import load_graph_from_file, LoadError
 
     data_graph, load_error = load_graph_from_file(file_path)
     if load_error:
@@ -103,20 +123,40 @@ def validate_file(file_path, shacl_graph, inference='rdfs', extra_graph=None):
     if extra_graph:
         data_graph += extra_graph
 
-    conforms, results_graph, report_text = validate(
-        data_graph,
-        shacl_graph=shacl_graph,
-        inference=inference,
-        abort_on_first=False
-    )
+    try:
+        conforms, results_graph, report_text = _validate_with_timeout(
+            data_graph,
+            shacl_graph=shacl_graph,
+            inference=inference,
+            timeout_seconds=timeout_seconds,
+        )
+    except ValidationTimeoutError as e:
+        return None, LoadError(file_path, str(e))
+
     return ValidationResult(conforms, results_graph, report_text, file_path), None
 
 
-def validate_multiple_files(file_paths, shacl_graph, inference='rdfs', extra_graph=None):
+def validate_multiple_files(
+    file_paths,
+    shacl_graph,
+    inference='rdfs',
+    extra_graph=None,
+    timeout_seconds=0,
+    progress_callback=None,
+):
     results = []
     errors = []
-    for file_path in file_paths:
-        result, error = validate_file(file_path, shacl_graph, inference, extra_graph)
+    total = len(file_paths)
+    for index, file_path in enumerate(file_paths, 1):
+        if progress_callback:
+            progress_callback(file_path, index, total)
+        result, error = validate_file(
+            file_path,
+            shacl_graph,
+            inference,
+            extra_graph,
+            timeout_seconds,
+        )
         if result:
             results.append(result)
         else:
