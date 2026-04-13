@@ -61,7 +61,8 @@ Example with explicit report file:
 ```bash
 uv run scripts/validate.py \
   --data sample_data/ \
-  --shacl shacl/
+  --shacl shacl/ \
+  --report-file logs/validation-report.txt
 ```
 
 Optional tuning example:
