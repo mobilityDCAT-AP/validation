@@ -20,10 +20,6 @@ class ValidationResult:
         self.file_path = file_path
         self._violations = None
     
-    def passed(self):
-        """Return validation result (conforms or not)"""
-        return self.conforms
-    
     def status(self):
         """Get status string based on conformance"""
         return "✓ Valid" if self.conforms else "✗ Invalid"

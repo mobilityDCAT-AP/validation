@@ -2,6 +2,12 @@
 
 Validation suite for mobilityDCAT-AP 1.1.0 compliance using SHACL shapes.
 
+## Workflows
+
+This repository has two separate CLI workflows:
+- Universal validation: `scripts/validate.py` (pure SHACL conformance checks)
+- Suite testing: `scripts/validate_suite.py` (expects `positives`/`negatives` folder semantics)
+
 ## Quick Start
 ```bash
 # Install dependencies
@@ -19,6 +25,11 @@ uv run scripts/validate.py --data sample_data/mobility/negatives/M-N-01-missing-
 Show all options:
 ```bash
 uv run scripts/validate.py --help
+```
+
+Show suite tester options:
+```bash
+uv run scripts/validate_suite.py --help
 ```
 
 Minimal default run:
@@ -76,27 +87,29 @@ uv run scripts/validate.py \
 ```
 
 ## Run All Test Suites
+
+Use the dedicated suite runner so expectations are evaluated from `positives`/`negatives` paths:
 ```bash
 # All baseline DCAT-AP tests
-uv run scripts/validate.py --data sample_data/baseline-dcat-ap/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/baseline-dcat-ap/ --shacl shacl/
 
 # All mobility-specific tests
-uv run scripts/validate.py --data sample_data/mobility/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/mobility/ --shacl shacl/
 
 # All multilingual tests
-uv run scripts/validate.py --data sample_data/multilingual/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/multilingual/ --shacl shacl/
 
 # All partial graph tests
-uv run scripts/validate.py --data sample_data/partial_graphs/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/partial_graphs/ --shacl shacl/
 
 # All range constraint tests
-uv run scripts/validate.py --data sample_data/ranges/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/ranges/ --shacl shacl/
 
 # All vocabulary tests
-uv run scripts/validate.py --data sample_data/vocabularies/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/vocabularies/ --shacl shacl/
 
 # Run everything
-uv run scripts/validate.py --data sample_data/ --shacl shacl/
+uv run scripts/validate_suite.py --data sample_data/ --shacl shacl/
 ```
 
 ## Docker Usage

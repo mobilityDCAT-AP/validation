@@ -22,9 +22,18 @@ uv sync  # or: docker build -t mobilitydcat-validator .
 
 ## CLI Usage
 
+Two separate workflows are available:
+- Universal validation: `scripts/validate.py`
+- Suite testing (positives/negatives expected outcomes): `scripts/validate_suite.py`
+
 Run validator help:
 ```bash
 uv run scripts/validate.py --help
+```
+
+Run suite tester help:
+```bash
+uv run scripts/validate_suite.py --help
 ```
 
 Minimal default run:
@@ -72,6 +81,11 @@ Common options:
 - `--timeout`: Per-file validation timeout in seconds (`0` disables timeout)
 - `--max-files-report`: Safety option to cap VALID/INVALID terminal output on large runs (`50` default, `0` means unlimited)
 - `--report-file`: Path for full detailed validation report
+
+Suite testing workflow:
+- Use `scripts/validate_suite.py` for `positives`/`negatives` test folders.
+- Expected outcomes are inferred from directory names (`positives` => should conform, `negatives` => should violate).
+- Files outside those folder patterns are reported as unclassified and fail the suite run.
 
 Why `--vocab` is important:
 - Some SHACL checks rely on external controlled vocabularies being available as RDF resources at validation time.

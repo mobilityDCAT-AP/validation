@@ -109,9 +109,9 @@ def validate_single_file(
             print()
 
     if return_details:
-        return True, result, None
+        return result.conforms, result, None
 
-    return True  # Return True if file was successfully validated (regardless of result)
+    return result.conforms
 
 
 def validate_directory(
