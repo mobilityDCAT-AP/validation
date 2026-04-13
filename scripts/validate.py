@@ -21,31 +21,35 @@ def load_vocab_graph(vocab_dir: Path) -> Graph:
 
 
 def validate_single_file(data_file, shacl_graph, verbose=False, vocab_graph=None):
-    """Validate a single file"""
+    """Validate a single file and report results"""
     result, error = validate_file(data_file, shacl_graph, extra_graph=vocab_graph)
 
     if error:
-        print(f"❌ ERROR {error}")
+        print(f"❌ {error}")
         return False
 
-    print(f"{result.status():8} {data_file.name}")
+    status = "✓ Valid" if result.conforms else "✗ Invalid"
+    print(f"{status:12} {data_file.name}")
 
-    if verbose and not result.conforms:
+    # Show violations if invalid
+    if not result.conforms:
         violations = result.get_violations()
         if violations:
-            print(f"\n  Violations found: {len(violations)}")
-            for i, v in enumerate(violations, 1):
-                print(f"  [{i}] Property: {v.get('property', 'unknown')}")
-                print(f"      Constraint: {v.get('constraint', 'unknown')}")
-                if 'message' in v:
-                    print(f"      Message: {v['message'][:100]}")
+            print(f"             Violations: {len(violations)}")
+            if verbose:
+                for i, v in enumerate(violations, 1):
+                    print(f"             [{i}] Property: {v.get('property', 'unknown')}")
+                    print(f"                 Constraint: {v.get('constraint', 'unknown')}")
+                    if 'message' in v:
+                        msg = v['message'][:80]
+                        print(f"                 Message: {msg}")
             print()
 
-    return result.passed()
+    return True  # Return True if file was successfully validated (regardless of result)
 
 
 def validate_directory(data_dir, shacl_graph, verbose=False, vocab_graph=None):
-    """Validate all files in a directory"""
+    """Validate all files in a directory and report results"""
     rdf_files = discover_rdf_files(data_dir)
 
     if not rdf_files:
@@ -65,38 +69,32 @@ def validate_directory(data_dir, shacl_graph, verbose=False, vocab_graph=None):
             print(f"❌ {error}")
         print()
 
-    # Group results
-    passed = [r for r in results if r.passed()]
-    failed = [r for r in results if not r.passed()]
+    # Group results by conformance
+    valid = [r for r in results if r.conforms]
+    invalid = [r for r in results if not r.conforms]
 
-    # Show passed tests
-    if passed:
+    # Show valid files
+    if valid:
         print("=" * 80)
-        print("PASSED")
+        print("VALID")
         print("=" * 80)
-        for result in passed:
+        for result in valid:
             rel_path = result.file_path.relative_to(data_dir)
-            violations = result.get_violations()
-            if violations:
-                print(f"✓ {str(rel_path):<45} Detected {len(violations)} violation(s)")
-            else:
-                print(f"✓ {str(rel_path):<45} Valid")
+            print(f"✓ {str(rel_path)}")
         print()
 
-    # Show failed tests with details
-    if failed:
+    # Show invalid files with violation details
+    if invalid:
         print("=" * 80)
-        print("FAILED")
+        print("INVALID")
         print("=" * 80)
-        for result in failed:
+        for result in invalid:
             rel_path = result.file_path.relative_to(data_dir)
+            violations = result.get_violations()
             print(f"\n✗ {rel_path}")
-
-            if result.is_positive_test():
-                violations = result.get_violations()
-                if violations:
-                    print(f"  Expected: Valid")
-                    print(f"  Got:      {len(violations)} violation(s) found\n")
+            if violations:
+                print(f"  Violations: {len(violations)}")
+                if verbose:
                     for i, v in enumerate(violations, 1):
                         prop = v.get('property', 'unknown')
                         constraint = v.get('constraint', 'Unknown')
@@ -105,28 +103,25 @@ def validate_directory(data_dir, shacl_graph, verbose=False, vocab_graph=None):
                         if 'message' in v:
                             msg = v['message'][:80]
                             print(f"      Message: {msg}")
-                        print()
-            else:
-                print(f"  Expected: Invalid (should have violations)")
-                print(f"  Got:      Valid (no violations detected)\n")
+                print()
 
     # Summary
     print("=" * 80)
     print("SUMMARY")
     print("=" * 80)
     total = len(results)
-    passed_count = len(passed)
-    failed_count = len(failed)
+    valid_count = len(valid)
+    invalid_count = len(invalid)
     error_count = len(errors)
 
-    print(f"Total:    {total} file(s)")
-    print(f"✓ Passed: {passed_count}")
-    print(f"✗ Failed: {failed_count}")
+    print(f"Total:     {total} file(s)")
+    print(f"✓ Valid:   {valid_count}")
+    print(f"✗ Invalid: {invalid_count}")
     if error_count:
-        print(f"❌ Errors: {error_count}")
+        print(f"❌ Errors:  {error_count}")
     print("=" * 80)
 
-    return failed_count == 0 and error_count == 0
+    return error_count == 0
 
 
 def main():

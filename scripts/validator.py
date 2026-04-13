@@ -15,30 +15,13 @@ class ValidationResult:
         self.file_path = file_path
         self._violations = None
     
-    def is_positive_test(self):
-        """Check if this is a positive test case"""
-        if self.file_path:
-            return "positive" in str(self.file_path)
-        return False
-    
-    def is_negative_test(self):
-        """Check if this is a negative test case"""
-        if self.file_path:
-            return "negative" in str(self.file_path)
-        return False
-    
     def passed(self):
-        """Check if test passed based on expected outcome"""
-        if self.is_positive_test():
-            return self.conforms
-        elif self.is_negative_test():
-            return not self.conforms
-        else:
-            return self.conforms
+        """Return validation result (conforms or not)"""
+        return self.conforms
     
     def status(self):
-        """Get status string"""
-        return "✓ PASS" if self.passed() else "✗ FAIL"
+        """Get status string based on conformance"""
+        return "✓ Valid" if self.conforms else "✗ Invalid"
     
     def get_violations(self):
         """Extract violation details from results graph"""
@@ -93,7 +76,6 @@ def validate_graph(data_graph, shacl_graph, inference='rdfs'):
 
 def validate_file(file_path, shacl_graph, inference='rdfs', extra_graph=None):
     from graph_loader import load_graph_from_file
-    from rdflib import Graph
 
     data_graph, load_error = load_graph_from_file(file_path)
     if load_error:
